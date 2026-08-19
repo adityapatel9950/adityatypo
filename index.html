@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Test & Practice</title>
+  <meta name="description"
+    content="A pristine Neumorphic soft-UI typing test and practice application. Real-time WPM, accuracy tracking, Web Audio API keyboard sounds, Mistake Vault, and analytics.">
+
+  <!-- FontAwesome & Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <!-- App Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-keyboard"></i>
+        </div>
+        <div class="brand-text">
+          <h1>AdityaType</h1>
+          <span>typing test & practice</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button id="nav-vault-btn" class="neu-btn" title="Mistake Vault">
+          <i class="fa-solid fa-vault"></i> Vault
+        </button>
+
+        <button id="nav-history-btn" class="neu-btn" title="Analytics & History">
+          <i class="fa-solid fa-chart-line"></i> History
+        </button>
+
+        <!-- Mechanical Switch Profile Dropdown -->
+        <select id="sound-preset-select" class="sound-preset-select" title="Keyboard Switch Profile">
+          <option value="thock">Thocky (Cream)</option>
+          <option value="clicky">Clicky (Blue)</option>
+          <option value="tactile">Tactile (Brown)</option>
+          <option value="typewriter">Typewriter</option>
+          <option value="linear">Silent (Red)</option>
+        </select>
+
+        <button id="sound-toggle-btn" class="neu-btn active" title="Toggle Mechanical Audio">
+          <i class="fa-solid fa-volume-high"></i> Sound On
+        </button>
+      </div>
+    </header>
+
+    <!-- Control Bar (Modes & Options) -->
+    <div class="control-bar neu-card">
+      <div class="mode-group">
+        <button class="mode-btn active" data-mode="time">
+          <i class="fa-solid fa-clock"></i> Time
+        </button>
+        <button class="mode-btn" data-mode="words">
+          <i class="fa-solid fa-font"></i> Words
+        </button>
+        <button class="mode-btn" data-mode="vault">
+          <i class="fa-solid fa-bolt"></i> Mistake Vault
+        </button>
+        <button class="mode-btn" data-mode="quote">
+          <i class="fa-solid fa-quote-left"></i> Quote
+        </button>
+        <button class="mode-btn" data-mode="code">
+          <i class="fa-solid fa-code"></i> Code
+        </button>
+        <button class="mode-btn" data-mode="custom">
+          <i class="fa-solid fa-sliders"></i> Custom
+        </button>
+      </div>
+
+      <div id="sub-options-container" class="sub-options">
+        <!-- Dynamic Sub-options inserted via JS -->
+      </div>
+    </div>
+
+    <!-- Stats HUD -->
+    <div class="stats-hud">
+      <div class="stat-box neu-card">
+        <div id="hud-wpm" class="stat-value primary">0</div>
+        <div class="stat-label">WPM</div>
+      </div>
+      <div class="stat-box neu-card">
+        <div id="hud-accuracy" class="stat-value">100%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+      <div class="stat-box neu-card">
+        <div id="hud-timer" class="stat-value">60s</div>
+        <div class="stat-label">Time</div>
+      </div>
+      <div class="stat-box neu-card">
+        <div id="hud-errors" class="stat-value">0</div>
+        <div class="stat-label">Errors</div>
+      </div>
+    </div>
+
+    <!-- Typing Arena Card -->
+    <div id="arena-card" class="arena-card neu-inset-card">
+
+      <!-- Click / Key Focus Overlay -->
+      <div id="focus-overlay" class="focus-overlay hidden">
+        <div class="focus-msg">
+          <i class="fa-solid fa-arrow-pointer"></i> Click here or press any key to focus
+        </div>
+      </div>
+
+      <!-- Hidden Input Field for capturing keystrokes -->
+      <input type="text" id="hidden-input" autocomplete="off" spellcheck="false" autofocus>
+
+      <!-- Words & Character Display -->
+      <div id="words-container" class="words-container">
+        <!-- Animated Soft Caret -->
+        <div id="caret" class="caret"></div>
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Quick Restart Action -->
+    <div class="arena-actions">
+      <button id="restart-btn" class="neu-btn restart-btn">
+        <i class="fa-solid fa-rotate-right"></i> Restart Test
+      </button>
+      <span class="key-hint">Press <kbd>Tab</kbd> + <kbd>Enter</kbd> or <kbd>Esc</kbd> to restart</span>
+    </div>
+
+    <!-- Interactive Soft Visual Keyboard (Visualizer) -->
+    <div id="virtual-keyboard" class="virtual-keyboard neu-card">
+      <div class="kb-row">
+        <div class="kb-key" data-key="q">Q</div>
+        <div class="kb-key" data-key="w">W</div>
+        <div class="kb-key" data-key="e">E</div>
+        <div class="kb-key" data-key="r">R</div>
+        <div class="kb-key" data-key="t">T</div>
+        <div class="kb-key" data-key="y">Y</div>
+        <div class="kb-key" data-key="u">U</div>
+        <div class="kb-key" data-key="i">I</div>
+        <div class="kb-key" data-key="o">O</div>
+        <div class="kb-key" data-key="p">P</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" data-key="a">A</div>
+        <div class="kb-key" data-key="s">S</div>
+        <div class="kb-key" data-key="d">D</div>
+        <div class="kb-key" data-key="f">F</div>
+        <div class="kb-key" data-key="g">G</div>
+        <div class="kb-key" data-key="h">H</div>
+        <div class="kb-key" data-key="j">J</div>
+        <div class="kb-key" data-key="k">K</div>
+        <div class="kb-key" data-key="l">L</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" data-key="z">Z</div>
+        <div class="kb-key" data-key="x">X</div>
+        <div class="kb-key" data-key="c">C</div>
+        <div class="kb-key" data-key="v">V</div>
+        <div class="kb-key" data-key="b">B</div>
+        <div class="kb-key" data-key="n">N</div>
+        <div class="kb-key" data-key="m">M</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key space" data-key="space">Space</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESULTS DASHBOARD MODAL -->
+  <div id="results-modal" class="modal-backdrop">
+    <div class="modal-card neu-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-trophy" style="color: var(--accent-warning);"></i> Test Results
+        </div>
+        <button class="close-btn close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card-main neu-card">
+          <div id="res-wpm" class="result-big-val">0</div>
+          <div class="result-big-label">Net WPM</div>
+        </div>
+
+        <div class="result-card-main neu-card">
+          <div id="res-acc" class="result-big-val" style="color: var(--accent-success);">100%</div>
+          <div class="result-big-label">Accuracy</div>
+        </div>
+      </div>
+
+      <!-- Performance Canvas Curve Chart -->
+      <div class="chart-wrapper neu-inset-card">
+        <canvas id="results-chart"></canvas>
+      </div>
+
+      <!-- Detail Metrics breakdown -->
+      <div class="results-details">
+        <div class="detail-row">
+          <span class="detail-label">Raw WPM</span>
+          <span id="res-raw" class="detail-val">0</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Time Elapsed</span>
+          <span id="res-time" class="detail-val">60s</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Errors</span>
+          <span id="res-errors" class="detail-val">0</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Correct Chars</span>
+          <span id="res-correct" class="detail-val">0</span>
+        </div>
+      </div>
+
+      <div class="arena-actions" style="justify-content: flex-end; gap: 0.75rem;">
+        <button id="share-score-btn" class="neu-btn">
+          <i class="fa-solid fa-share-nodes"></i> Share Result
+        </button>
+        <button class="neu-btn restart-btn close-modal-btn" onclick="document.getElementById('restart-btn').click();">
+          <i class="fa-solid fa-rotate-right"></i> Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM TEXT MODAL -->
+  <div id="custom-modal" class="modal-backdrop">
+    <div class="modal-card neu-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-sliders"></i> Practice Custom Text
+        </div>
+        <button class="close-btn close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+        Paste any article, paragraph, or code snippet below to practice custom text passages.
+      </p>
+
+      <textarea id="custom-text-input" class="neu-input custom-textarea"
+        placeholder="Paste your text here..."></textarea>
+
+      <div class="arena-actions" style="justify-content: flex-end;">
+        <button id="btn-custom-text-save" class="neu-btn active">
+          <i class="fa-solid fa-check"></i> Start Practice
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISTAKE VAULT MODAL -->
+  <div id="vault-modal" class="modal-backdrop">
+    <div class="modal-card neu-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-vault" style="color: var(--accent-error);"></i> Mistake Vault
+        </div>
+        <button class="close-btn close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">
+        Words you frequently mistype are automatically saved here. Select "Mistake Vault" mode to practice them
+        specifically.
+      </p>
+
+      <div id="vault-chips-container" class="vault-list neu-inset-card">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="arena-actions" style="justify-content: space-between; margin-top: 1.5rem;">
+        <button id="clear-vault-btn" class="neu-btn" style="color: var(--accent-error);">
+          <i class="fa-solid fa-trash"></i> Clear Vault
+        </button>
+        <button class="neu-btn active close-modal-btn"
+          onclick="document.querySelector('.mode-btn[data-mode=\'vault\']').click();">
+          <i class="fa-solid fa-play"></i> Practice Vault Words
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY MODAL -->
+  <div id="history-modal" class="modal-backdrop">
+    <div class="modal-card neu-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-clock-rotate-left"></i> Test History & Past Records
+        </div>
+        <button class="close-btn close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="history-table-container neu-inset-card">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Mode</th>
+              <th>WPM</th>
+              <th>Accuracy</th>
+              <th>Errors</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="arena-actions" style="justify-content: space-between; margin-top: 1.5rem;">
+        <button id="clear-history-btn" class="neu-btn" style="color: var(--accent-error);">
+          <i class="fa-solid fa-trash"></i> Clear History
+        </button>
+        <button class="neu-btn close-modal-btn">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>AdityaType Soft UI &copy; 2026 — Built with HTML5, CSS Neumorphism &amp; Web Audio API</div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="document.getElementById('nav-vault-btn').click();">Mistake Vault</span>
+      <span class="footer-link" onclick="document.getElementById('nav-history-btn').click();">Analytics</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data/textCorpus.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/mistakeVault.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
