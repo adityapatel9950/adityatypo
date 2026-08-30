@@ -1,8 +1,8 @@
-# ⌨️ AdityaType
+# ⌨️ AdityaTypo
 
 ### A modern, privacy-first typing practice experience built for speed, accuracy, and consistency.
 
-AdityaType is a browser-based typing test and practice application with a soft neumorphic interface. It measures your typing performance in real time and turns your recurring mistakes into targeted practice.
+AdityaTypo is a browser-based typing test and practice application with a soft neumorphic interface. It measures your typing performance in real time and turns your recurring mistakes into targeted practice.
 
 > **Type. Track. Improve. Repeat.**
 
@@ -30,11 +30,11 @@ No installation required. Open the website and start typing.
 
 ---
 
-## ✨ Why AdityaType?
+## ✨ Why AdityaTypo?
 
 Most typing tests simply show your WPM and accuracy.
 
-**AdityaType goes one step further.**
+**AdityaTypo goes one step further.**
 
 It helps you understand:
 
@@ -85,7 +85,7 @@ Audio is generated using the **Web Audio API**, so no audio files are required f
 
 # 📊 Typing Analytics
 
-AdityaType tracks multiple performance metrics instead of focusing only on WPM.
+AdityaTypo tracks multiple performance metrics instead of focusing only on WPM.
 
 ### Metrics
 
@@ -117,7 +117,7 @@ Visualizes how your performance changes throughout the test.
 
 # 🧠 Mistake Vault
 
-One of the core features of AdityaType.
+One of the core features of AdityaTypo.
 
 Instead of forgetting your mistakes after every test, AdityaType keeps track of words you repeatedly type incorrectly.
 
